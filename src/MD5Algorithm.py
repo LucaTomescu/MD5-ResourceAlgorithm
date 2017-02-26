@@ -32,10 +32,8 @@ for colOfCellObjects in sheet['B2':'B99']:
             longitudes.append(cellObj.value)
 
 for i in latitudes:
-    #print(i)
     latitudeSum += i
 for i in longitudes:
-    #print(i)
     longitudeSum += 1
 
 latNP = np.array(latitudes)
@@ -51,7 +49,7 @@ latitudeMax = max(latitudes)
 longitudeMin = min(longitudes)
 longitudeMax = max(longitudes)
 
-#print(latitudeMin, latitudeMax, longitudeMin, longitudeMax)
+
 
 fig, ax = plt.subplots(figsize=(10,20))
 
@@ -66,33 +64,8 @@ m.drawcoastlines()
 m.readshapefile('Haiti_all_roads','HaitiRoads')
 m.readshapefile('hti_watrcrsl_rvr_minustah', 'HaitiRivers')
 
-"""""################################################################### figure out how to make rivers blue
-seg = m.HaitiRivers
-poly = Polygon(seg,edgecolor='blue')
-ax.add_patch(poly)
 
-x, y = zip(m.hti_watrcrsl_rvr_minustah, m.HaitiRivers)
-m.plot(x, y, marker=None, color='b')
-"""
-""""
-for i in range(0, len(latitudes), 1):
-    midLon = longitudes[i]
-    midLat = latitudes[i]
-    x, y = m(midLon, midLat)
-    m.plot(x, y, 'ro', markersize=11)
-"""
-#x, y = m(longitudes,latitudes)
-#m.scatter(x, y, marker='D',color='m')
 
-#K = 6
-
-#initial = [cluster.vq.kmeans(coordinates,i) for i in range(1,10)]
-#print(initial)
-
-#cent, var = initial[K-1]
-#assignment, cdist = cluster.vq.vq(coordinates,cent)
-#m.scatter(coordinates[:,1], coordinates[:,0], c=assignment,s=1000)
-#print(assignment)
 
 K = 4
 kmeans = KMeans(n_clusters=K, random_state=3000).fit(coordinates)
@@ -102,9 +75,6 @@ assignment = kmeans.labels_
 
 print(assignment)
 print(centroids)
-
-#plt.scatter(centroids[:, 0], centroids[:, 1],
- #           marker = 'x', s = 169, linewidths = 3, color = 'w', zorder = 10)
 
 count0 = True
 count1 = True
@@ -168,76 +138,6 @@ for pt in range(0, len(latitudes), 1):
             count5 = False
 
 
-"""
-cleanAssignment = assignment.tolist()
-cleanLength = len(cleanAssignment)
-
-for i in range(0, K, 1):
-    try:
-        value = cleanAssignment[i+1]
-        while cleanAssignment[i+1] == cleanAssignment[i]:
-            del cleanAssignment[i+1]
-            try:
-                value = cleanAssignment[i+1]
-            except IndexError:
-                break
-    except IndexError:
-        break
-    print(cleanAssignment)
-"""
-""""
-for i in range(0, K, 1):
-    lon = centroids[i, 1]
-    lat = centroids[i, 0]
-    x, y = m(lon,lat)
-    if cleanAssignment[i] == 0:
-        m.plot(x, y, 'y*', markersize=15)
-    if cleanAssignment[i] == 1:
-        m.plot(x, y, 'r*', markersize=15)
-    if cleanAssignment[i] == 2:
-        m.plot(x, y, 'g*', markersize=15)
-    if cleanAssignment[i] == 3:
-        m.plot(x, y, 'b*', markersize=15)
-    if cleanAssignment[i] == 4:
-        m.plot(x, y, 'c*', markersize=15)
-    if cleanAssignment[i] == 5:
-        m.plot(x, y, 'm*', markersize=15)
-"""
-
 
 plt.show()
 
-############################################################
-############################################################
-############################################################
-"""""
-def cluster_points(X, mu):
-    clusters = {}
-    for x in X:
-        bestmukey = min([(i[0], np.linalg.norm(x-mu[i[0]]))
-                    for i in enumerate(mu)], key=lambda t:t[1])[0]
-        try:
-            clusters[bestmukey].append(x)
-        except KeyError:
-            clusters[bestmukey] = [x]
-    return clusters
-
-def reevaluate_centers(mu, clusters):
-    newmu = []
-    keys = sorted(clusters.keys())
-    for k in keys:
-        newmu.append(np.mean(clusters[k], axis = 0))
-    return newmu
-
-def has_converged(mu, oldmu):
-    return (set([tuple(a) for a in mu]) == set([tuple(a) for a in oldmu]))
-
-def find_centers(x, K):
-    oldmu = random.sample(X, K)
-    mu = random.sample(X, K)
-    while not has_converged(mu, oldmu):
-        oldmu = mu
-        clusters = cluster_points(X, mu)
-        mu = reevaluate_centers(oldmu, clusters)
-    return(mu, clusters)
-"""
